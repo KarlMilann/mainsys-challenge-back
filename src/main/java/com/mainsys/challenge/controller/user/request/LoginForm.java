@@ -2,22 +2,18 @@ package com.mainsys.challenge.controller.user.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Set;
 
 /**
- * Data formta when a user sign up
+ * Data format of the login request of an user
  */
-public class SignUpForm {
+public class LoginForm {
     @NotBlank
-    @Size(min = 3, max = 50)
+    @Size(min = 3, max = 60)
     private String username;
-
-    private Set<String> role;
 
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
-
 
     public String getUsername() {
         return username;
@@ -33,13 +29,5 @@ public class SignUpForm {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Set<String> getRole() {
-        return this.role;
-    }
-
-    public void setRole(Set<String> role) {
-        this.role = role;
     }
 }
