@@ -19,8 +19,11 @@ create table user_roles
     constraint roleid foreign key (role_id) references roles (id)
 );
 create table sales (
-    id bigint auto_increment primary key ,
-    product_name varchar(255) null ,
-    product_quantity bigint,
-    unit_price double
-);
+                       id bigint auto_increment primary key ,
+                       product_name varchar(255) null ,
+                       product_quantity bigint,
+                       unit_price double,
+                       date date,
+                       user bigint null,
+                       constraint usersale foreign key (user) references user (id)
+)
