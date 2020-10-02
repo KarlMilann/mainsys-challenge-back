@@ -61,7 +61,7 @@ public class UserController {
 
         return new ResponseEntity<>("User has been deleted!", HttpStatus.OK);
     }
-    @PutMapping("/users/{id}")
+    @PutMapping("/users/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") long id, @RequestBody User user) {
         System.out.println("Update User with ID = " + id + "...");
 

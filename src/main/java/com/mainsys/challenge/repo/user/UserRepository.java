@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByUsername(String username);
-
+    List<User> getAllByIdIsNotNullOrderByTotalProfit();
     List<User> findByRoles(Role role);
 
     Optional<User> findByUsername(String username);

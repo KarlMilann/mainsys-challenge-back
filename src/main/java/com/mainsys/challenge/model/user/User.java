@@ -24,7 +24,7 @@ public class User {
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Sales> sales;
 
@@ -70,5 +70,13 @@ public class User {
 
     public void setSales(Set<Sales> sales) {
         this.sales = sales;
+    }
+
+    public double getTotalProfit() {
+        return totalProfit;
+    }
+
+    public void setTotalProfit(double totalProfit) {
+        this.totalProfit = totalProfit;
     }
 }

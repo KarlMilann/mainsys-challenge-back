@@ -1,5 +1,6 @@
 package com.mainsys.challenge.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mainsys.challenge.model.user.User;
 
@@ -22,7 +23,7 @@ public class Sales {
     private double productProfit;
     private Date date;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @ManyToOne
     @JoinColumn(name = "user")
     private User user;

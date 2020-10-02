@@ -1,7 +1,9 @@
+drop table user, roles, user_roles, sales;
 create table user (
                       id bigint auto_increment primary key,
                       password varchar(255) null ,
-                      username varchar(255) null
+                      username varchar(255) null,
+                      total_profit double
 
 );
 create table roles
@@ -21,8 +23,7 @@ create table user_roles
 create table sales (
                        id bigint auto_increment primary key ,
                        product_name varchar(255) null ,
-                       product_quantity bigint,
-                       unit_price double,
+                       product_profit bigint,
                        date date,
                        user bigint null,
                        constraint usersale foreign key (user) references user (id)

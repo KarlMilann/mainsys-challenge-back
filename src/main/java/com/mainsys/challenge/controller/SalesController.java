@@ -36,7 +36,7 @@ public class SalesController {
         return sales;
     }
 
-    @GetMapping("/sales/{date}")
+    @GetMapping("/sales/year/{date}")
     public List<Sales> getSalesByDate(@PathVariable Date date) {
         System.out.println("Get Sales for year : "+date.toString());
         List<Sales> sales = new ArrayList<>();
