@@ -23,7 +23,7 @@ public class Sales {
     private double productProfit;
     private Date date;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @ManyToOne
     @JoinColumn(name = "user")
     private User user;

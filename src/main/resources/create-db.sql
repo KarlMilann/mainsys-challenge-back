@@ -1,4 +1,4 @@
-drop table user, roles, user_roles, sales;
+# drop table user, roles, user_roles, sales;
 create table user (
                       id bigint auto_increment primary key,
                       password varchar(255) null ,

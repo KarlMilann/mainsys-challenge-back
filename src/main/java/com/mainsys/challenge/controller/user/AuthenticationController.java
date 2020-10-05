@@ -26,7 +26,7 @@ import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
@@ -51,10 +51,13 @@ public class AuthenticationController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
+        System.out.println("auth: "+authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         String jwt = jwtProvider.generateJwtToken(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
+        System.out.println("jwt = "+jwt+"uDetails uname = "+userDetails.getUsername()+"udetails authoritites"+userDetails.getAuthorities());
+        System.out.println(ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities())).toString());
         return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities()));
     }
     @PostMapping("/signup")
@@ -88,7 +91,7 @@ public class AuthenticationController {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return new ResponseEntity<>(new ResponseMessage("User registerd successfully"), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseMessage("User registered successfully!"));
     }
     @PostMapping("/signup/admin")
     @PreAuthorize("hasRole('ADMIN')")

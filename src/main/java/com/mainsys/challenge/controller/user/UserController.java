@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * Rest Controller to manage the users
  */
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class UserController {

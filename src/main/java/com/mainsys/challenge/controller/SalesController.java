@@ -11,12 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class SalesController {
@@ -44,9 +41,10 @@ public class SalesController {
         return sales;
     }
 
-    @PostMapping("/sales/create/")
+    @PostMapping("/sales/create")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Sales> createSales(@RequestBody Sales sale) {
+        System.out.println(sale);
         if (sale.getAllParamsToCheck().containsValue(null)) {
             throw new IllegalArgumentException(
                     sale.getAllParamsToCheck().entrySet()
@@ -57,6 +55,10 @@ public class SalesController {
             );
         }
         User user = userRepository.findById(sale.getUser().getId()).get();
+        double userProfit = user.getTotalProfit();
+        userProfit += sale.getProductProfit();
+        user.setTotalProfit(userProfit);
+        userRepository.save(user);
         Sales saveSale = new Sales(
                 sale.getProductName(),
                 sale.getProductProfit(),
@@ -70,7 +72,11 @@ public class SalesController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> deleteSales(@PathVariable("id") long id) {
         System.out.println("Delete Sale with ID = "+ id + "...");
-
+        User userToUpdate = salesRepository.findById(id).get().getUser();
+        double userProfitLoss = userToUpdate.getTotalProfit();
+        userProfitLoss -= salesRepository.findById(id).get().getProductProfit();
+        userToUpdate.setTotalProfit(userProfitLoss);
+        userRepository.save(userToUpdate);
         salesRepository.deleteById(id);
         return new ResponseEntity<>("Sale has been deleted", HttpStatus.OK);
     }
@@ -79,8 +85,29 @@ public class SalesController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Sales> updateSales(@RequestBody Sales sales) {
         System.out.println("Updates Sales with ID = "+ sales.getId()+"...");
-        return new ResponseEntity<>(salesRepository.save(
-                salesRepository.findById(sales.getId()).get()),
+
+        Sales updatedSale = salesRepository.findById(sales.getId()).get();
+        updatedSale.setDate(sales.getDate());
+        updatedSale.setProductName(sales.getProductName());
+        double oldProfit = updatedSale.getProductProfit();
+        double newProfit = sales.getProductProfit();
+        if  (oldProfit != newProfit ) {
+         User userToUpdateTotalProfit = userRepository.findByUsername(sales.getUser().getUsername()).get();
+            double newUserProfit = userToUpdateTotalProfit.getTotalProfit();
+            if (oldProfit > newProfit) {
+              newUserProfit -=   (oldProfit - newProfit);
+              userToUpdateTotalProfit.setTotalProfit(newUserProfit);
+          } else {
+              newUserProfit += (oldProfit - newProfit);
+              userToUpdateTotalProfit.setTotalProfit(newUserProfit);
+          }
+            userRepository.save(userToUpdateTotalProfit);
+      }
+        updatedSale.setProductProfit((long) sales.getProductProfit());
+
+        updatedSale.setUser(sales.getUser());
+        return new ResponseEntity<>(
+                salesRepository.save(updatedSale),
                 HttpStatus.OK
         );
     }
